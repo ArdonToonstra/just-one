@@ -61,9 +61,51 @@ function getRandomWords(numWords) {
 }
 
 /**
+ * Saves the current game state to localStorage
+ */
+function saveGameState() {
+    try {
+        localStorage.setItem('justOneGameState', JSON.stringify(state));
+    } catch (e) {
+        console.warn('Could not save game state:', e);
+    }
+}
+
+/**
+ * Loads game state from localStorage
+ */
+function loadGameState() {
+    try {
+        const saved = localStorage.getItem('justOneGameState');
+        if (saved) {
+            return JSON.parse(saved);
+        }
+    } catch (e) {
+        console.warn('Could not load game state:', e);
+    }
+    return null;
+}
+
+/**
  * Initializes or resets the game.
  */
-function initGame() {
+function initGame(loadSaved = false) {
+    // Check if we should load a saved game
+    const urlParams = new URLSearchParams(window.location.search);
+    const shouldResume = urlParams.get('resume') === 'true' || loadSaved;
+    
+    if (shouldResume) {
+        const savedState = loadGameState();
+        if (savedState) {
+            state = savedState;
+            gameOverModal.classList.add('hidden');
+            render();
+            showResumeMessage();
+            return;
+        }
+    }
+    
+    // Start new game
     state.score = 0;
     state.cardIndex = 0;
     state.cards = [];
@@ -75,6 +117,10 @@ function initGame() {
         });
     }
     gameOverModal.classList.add('hidden');
+    
+    // Clear any saved state when starting new game
+    localStorage.removeItem('justOneGameState');
+    
     render();
 }
 
@@ -104,9 +150,16 @@ function render() {
     // Set up touch listeners for the current card if swipeable
     setupTouchListeners();
 
+    // Save game state (but not when game is over)
+    if (state.cardIndex < 13) {
+        saveGameState();
+    }
+
     // Check for game over
     if (state.cardIndex === 13) {
         showGameOverModal();
+        // Clear saved state when game is complete
+        localStorage.removeItem('justOneGameState');
     }
 }
 
@@ -217,6 +270,32 @@ function showGameOverModal() {
     
     finalMessageEl.textContent = message;
     gameOverModal.classList.remove('hidden');
+}
+
+/**
+ * Shows a brief message when game is resumed
+ */
+function showResumeMessage() {
+    const message = document.createElement('div');
+    message.className = 'resume-message';
+    message.innerHTML = `
+        <div class="resume-content">
+            <div class="text-2xl mb-2">↩️</div>
+            <div class="text-sm font-semibold">Game Resumed</div>
+            <div class="text-xs opacity-80">Card ${state.cardIndex + 1} of 13 • Score: ${state.score}</div>
+        </div>
+    `;
+    
+    document.body.appendChild(message);
+    
+    // Animate in
+    setTimeout(() => message.classList.add('show'), 100);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        message.classList.remove('show');
+        setTimeout(() => message.remove(), 300);
+    }, 3000);
 }
 
 /**

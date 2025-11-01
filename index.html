@@ -35,13 +35,38 @@
         <div class="text-6xl mb-4">🎲</div>
         <h1 class="hero-title text-5xl font-bold mb-4">Just One</h1>
         <p class="text-lg text-gray-300 mb-8">A cooperative party game where you try to guess mystery words using unique clues.</p>
-        <a href="game.html" class="btn-primary text-xl mb-4 inline-block w-full">
-            🎮 Start Game
+        <button id="resume-game-btn" class="btn-success text-xl mb-4 inline-block w-full hidden">
+            ↩️ Resume Game
+        </button>
+        <a href="game.html" id="new-game-btn" class="btn-primary text-xl mb-4 inline-block w-full">
+            🎮 New Game
         </a>
         <a href="rules.html" class="btn-secondary text-base inline-block w-full">
             📖 How to Play
         </a>
     </div>
+
+    <script>
+        // Check if there's a saved game
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedGame = localStorage.getItem('justOneGameState');
+            const resumeBtn = document.getElementById('resume-game-btn');
+            const newGameBtn = document.getElementById('new-game-btn');
+            
+            if (savedGame) {
+                const gameState = JSON.parse(savedGame);
+                // Only show resume if game is in progress
+                if (gameState.cardIndex < 13) {
+                    resumeBtn.classList.remove('hidden');
+                    newGameBtn.textContent = '🆕 Start New Game';
+                }
+            }
+            
+            resumeBtn.addEventListener('click', () => {
+                window.location.href = 'game.html?resume=true';
+            });
+        });
+    </script>
 
 </body>
 </html>
