@@ -70,11 +70,70 @@ const DUTCH_WORD_LIST = [
     "Banaan", "Sinaasappel", "Citroen", "Aardbei", "Framboos", "Blauwe", "Druif", "Meloen"
 ];
 
+const ENGLISH_ADVANCED_WORD_LIST = [
+    "Algorithm", "Paradigm", "Synergy", "Leverage", "Cryptocurrency", "Blockchain", "Metadata", "Infrastructure",
+    "Optimization", "Scalability", "Bandwidth", "Protocol", "Architecture", "Framework", "Middleware", "Interface",
+    "Ecosystem", "Analytics", "Stakeholder", "Methodology", "Derivative", "Portfolio", "Volatility", "Equity",
+    "Benchmark", "Virtualization", "Encryption", "Authentication", "Authorization", "Firewall", "Malware", "Phishing",
+    "Compliance", "Governance", "Arbitration", "Litigation", "Jurisdiction", "Amendment", "Statute", "Precedent",
+    "Hypothesis", "Theorem", "Axiom", "Quantum", "Entropy", "Catalyst", "Isotope", "Molecule",
+    "Chromosome", "Genome", "Enzyme", "Metabolism", "Mitochondria", "Photosynthesis", "Ecosystem", "Biodiversity",
+    "Democracy", "Bureaucracy", "Diplomacy", "Sovereignty", "Ideology", "Propaganda", "Referendum", "Coalition",
+    "Renaissance", "Enlightenment", "Revolution", "Imperialism", "Feudalism", "Colonialism", "Capitalism", "Socialism",
+    "Philosophy", "Metaphysics", "Epistemology", "Ethics", "Aesthetics", "Logic", "Dialectic", "Empiricism",
+    "Psychology", "Cognition", "Perception", "Consciousness", "Motivation", "Intelligence", "Personality", "Behavior",
+    "Sociology", "Anthropology", "Ethnography", "Culture", "Institution", "Stratification", "Urbanization", "Globalization",
+    "Economy", "Inflation", "Recession", "Deficit", "Monopoly", "Oligopoly", "Supply", "Demand",
+    "Marketing", "Branding", "Segmentation", "Demographics", "Consumer", "Revenue", "Profit", "Margin",
+    "Entrepreneurship", "Innovation", "Disruption", "Startup", "Venture", "Investment", "Acquisition", "Merger",
+    "Engineering", "Thermodynamics", "Mechanics", "Fluid", "Electromagnetic", "Semiconductor", "Circuit", "Resistance",
+    "Medicine", "Diagnosis", "Prognosis", "Symptom", "Syndrome", "Pathology", "Anatomy", "Physiology",
+    "Pharmacology", "Antibiotic", "Vaccine", "Immunity", "Inflammation", "Chronic", "Acute", "Therapy",
+    "Literature", "Narrative", "Protagonist", "Antagonist", "Metaphor", "Symbolism", "Allegory", "Irony",
+    "Linguistics", "Phonetics", "Syntax", "Semantics", "Morphology", "Pragmatics", "Discourse", "Dialect",
+    "Mathematics", "Calculus", "Algebra", "Geometry", "Trigonometry", "Statistics", "Probability", "Variable",
+    "Physics", "Relativity", "Gravity", "Momentum", "Energy", "Matter", "Particle", "Wave"
+];
+
+const DUTCH_ADVANCED_WORD_LIST = [
+    "Algoritme", "Paradigma", "Synergie", "Hefboom", "Cryptocurrency", "Blockchain", "Metadata", "Infrastructuur",
+    "Optimalisatie", "Schaalbaarheid", "Bandbreedte", "Protocol", "Architectuur", "Framework", "Middleware", "Interface",
+    "Ecosysteem", "Analytics", "Belanghebbende", "Methodologie", "Derivaat", "Portfolio", "Volatiliteit", "Aandelen",
+    "Benchmark", "Virtualisatie", "Encryptie", "Authenticatie", "Autorisatie", "Firewall", "Malware", "Phishing",
+    "Naleving", "Governance", "Arbitrage", "Rechtszaak", "Jurisdictie", "Amendement", "Statuut", "Precedent",
+    "Hypothese", "Stelling", "Axioma", "Quantum", "Entropie", "Katalysator", "Isotoop", "Molecuul",
+    "Chromosoom", "Genoom", "Enzym", "Metabolisme", "Mitochondriën", "Fotosynthese", "Ecosysteem", "Biodiversiteit",
+    "Democratie", "Bureaucratie", "Diplomatie", "Soevereiniteit", "Ideologie", "Propaganda", "Referendum", "Coalitie",
+    "Renaissance", "Verlichting", "Revolutie", "Imperialisme", "Feodalisme", "Kolonialisme", "Kapitalisme", "Socialisme",
+    "Filosofie", "Metafysica", "Epistemologie", "Ethiek", "Esthetica", "Logica", "Dialectiek", "Empirisme",
+    "Psychologie", "Cognitie", "Perceptie", "Bewustzijn", "Motivatie", "Intelligentie", "Persoonlijkheid", "Gedrag",
+    "Sociologie", "Antropologie", "Etnografie", "Cultuur", "Instituut", "Stratificatie", "Verstedelijking", "Globalisering",
+    "Economie", "Inflatie", "Recessie", "Tekort", "Monopolie", "Oligopolie", "Aanbod", "Vraag",
+    "Marketing", "Branding", "Segmentatie", "Demografie", "Consument", "Omzet", "Winst", "Marge",
+    "Ondernemerschap", "Innovatie", "Disruptie", "Startup", "Onderneming", "Investering", "Overname", "Fusie",
+    "Engineering", "Thermodynamica", "Mechanica", "Vloeistof", "Elektromagnetisch", "Halfgeleider", "Circuit", "Weerstand",
+    "Geneeskunde", "Diagnose", "Prognose", "Symptoom", "Syndroom", "Pathologie", "Anatomie", "Fysiologie",
+    "Farmacologie", "Antibioticum", "Vaccin", "Immuniteit", "Ontsteking", "Chronisch", "Acuut", "Therapie",
+    "Literatuur", "Verhaal", "Protagonist", "Antagonist", "Metafoor", "Symboliek", "Allegorie", "Ironie",
+    "Taalkunde", "Fonetiek", "Syntaxis", "Semantiek", "Morfologie", "Pragmatiek", "Discours", "Dialect",
+    "Wiskunde", "Calculus", "Algebra", "Geometrie", "Goniometrie", "Statistiek", "Waarschijnlijkheid", "Variabele",
+    "Fysica", "Relativiteit", "Zwaartekracht", "Momentum", "Energie", "Materie", "Deeltje", "Golf"
+];
+
 // Get the current word list based on user preference or game state
 function getCurrentWordList() {
     // If we're in a game, use the deck from the game state
     const selectedDeck = state.wordDeck || localStorage.getItem('justOneWordDeck') || 'english';
-    return selectedDeck === 'dutch' ? DUTCH_WORD_LIST : ENGLISH_WORD_LIST;
+    
+    if (selectedDeck === 'dutch') {
+        return DUTCH_WORD_LIST;
+    } else if (selectedDeck === 'dutch-advanced') {
+        return DUTCH_ADVANCED_WORD_LIST;
+    } else if (selectedDeck === 'english-advanced') {
+        return ENGLISH_ADVANCED_WORD_LIST;
+    } else {
+        return ENGLISH_WORD_LIST;
+    }
 }
 
 // --- DOM ELEMENTS ---
