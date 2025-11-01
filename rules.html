@@ -26,13 +26,7 @@
     <div class="app-container">
         <header class="game-header">
             <div class="flex justify-between items-center">
-                <div class="flex items-center gap-4">
-                    <h1 class="text-3xl font-bold text-white">Just One - Rules</h1>
-                    <div class="nav-links flex gap-2">
-                        <a href="index.html" class="nav-link text-xs">🏠 Home</a>
-                        <a href="game.html" class="nav-link text-xs" id="back-to-game">🎮 Game</a>
-                    </div>
-                </div>
+                <h1 class="text-3xl font-bold text-white">Just One - Rules</h1>
                 <div class="text-right">
                     <button id="resume-game-btn" class="btn-primary text-sm hidden">
                         ↩️ Resume Game
@@ -71,6 +65,15 @@
             <h2>End of the Game</h2>
             <p>The game ends when the deck is empty. The final score is the number of correctly guessed cards.</p>
         </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <a href="index.html" class="bottom-nav-link">Home</a>
+            <span class="bottom-nav-separator">•</span>
+            <a href="game.html" class="bottom-nav-link" id="back-to-game">Game</a>
+            <span class="bottom-nav-separator">•</span>
+            <a href="https://ardontoonstra.github.io/undercover-game/" target="_blank" class="bottom-nav-link">Undercover Game</a>
+        </div>
     </div>
 
     <script>
@@ -85,7 +88,7 @@
                 // Only show resume if game is in progress
                 if (gameState.cardIndex < 13) {
                     resumeBtn.classList.remove('hidden');
-                    backToGameLink.textContent = '🎮 Resume Game';
+                    backToGameLink.textContent = 'Resume Game';
                     backToGameLink.href = 'game.html?resume=true';
                 }
             }

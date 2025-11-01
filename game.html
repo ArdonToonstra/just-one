@@ -17,13 +17,7 @@
         <!-- Header -->
         <header class="game-header">
             <div class="flex justify-between items-center">
-                <div class="flex items-center gap-4">
-                    <h1 class="text-3xl font-bold text-white">Just One</h1>
-                    <div class="nav-links flex gap-2">
-                        <a href="index.html" class="nav-link text-xs">🏠 Home</a>
-                        <a href="rules.html" class="nav-link text-xs">📖 Rules</a>
-                    </div>
-                </div>
+                <h1 class="text-3xl font-bold text-white">Just One</h1>
                 <div class="text-right">
                     <div class="score-display">
                         <span id="score">0</span>
@@ -43,6 +37,15 @@
         <!-- Swipe instructions -->
         <div class="text-center mt-4 text-sm text-gray-300 opacity-70">
             <p id="swipe-hint" class="hidden">💡 Swipe: ➡️ Success | ⬅️ Wrong Guess | ⬆️ Pass</p>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <a href="index.html" class="bottom-nav-link">Home</a>
+            <span class="bottom-nav-separator">•</span>
+            <a href="rules.html" class="bottom-nav-link">Rules</a>
+            <span class="bottom-nav-separator">•</span>
+            <a href="https://ardontoonstra.github.io/undercover-game/" target="_blank" class="bottom-nav-link">Undercover Game</a>
         </div>
 
         <!-- Game Over Modal -->

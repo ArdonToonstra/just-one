@@ -1,4 +1,4 @@
-const MASTER_WORD_LIST = [
+const ENGLISH_WORD_LIST = [
     "Apple", "Music", "River", "Mountain", "Ocean", "Star", "Sun", "Moon",
     "Book", "Key", "Tree", "Flower", "Bridge", "Road", "Car", "Train",
     "Boat", "Plane", "Bird", "Cat", "Dog", "Fish", "Lion", "Tiger",
@@ -24,6 +24,58 @@ const MASTER_WORD_LIST = [
     "Read", "Write", "Draw", "Run", "Walk", "Jump", "Swim", "Fly",
     "Smile", "Laugh", "Cry", "Sad", "Happy", "Angry", "Fear", "Joy"
 ];
+
+const DUTCH_WORD_LIST = [
+    "Appel", "Muziek", "Rivier", "Berg", "Oceaan", "Ster", "Zon", "Maan",
+    "Boek", "Sleutel", "Boom", "Bloem", "Brug", "Weg", "Auto", "Trein",
+    "Boot", "Vliegtuig", "Vogel", "Kat", "Hond", "Vis", "Leeuw", "Tijger",
+    "Beer", "Paard", "Koe", "Varken", "Schaap", "Geit", "Eend", "Kikker",
+    "Slang", "Spin", "Mier", "Bij", "Vlieg", "Baby", "Kind", "Man",
+    "Vrouw", "Dokter", "Politie", "Vuur", "Water", "Aarde", "Lucht",
+    "Liefde", "Haat", "Oorlog", "Vrede", "Leven", "Dood", "Tijd", "Ruimte",
+    "Kunst", "Kleur", "Rood", "Groen", "Blauw", "Geel", "Zwart", "Wit",
+    "Eten", "Brood", "Kaas", "Melk", "Ei", "Vlees", "Fruit", "Pizza",
+    "Hart", "Geest", "Ziel", "Lichaam", "Hand", "Voet", "Oog", "Oor",
+    "Neus", "Mond", "Tand", "Haar", "Bloed", "Bot", "Huid", "Goud",
+    "Zilver", "IJzer", "Staal", "Hout", "Glas", "Papier", "Steen", "Rots",
+    "Zand", "Klei", "Doek", "Zijde", "Wol", "Katoen", "Geld", "Munt",
+    "Koning", "Koningin", "Prins", "Prinses", "Kasteel", "Zwaard", "Schild", "Oorlog",
+    "School", "Leraar", "Student", "Bureau", "Stoel", "Deur", "Raam", "Muur",
+    "Vloer", "Dak", "Kamer", "Thuis", "Huis", "Stad", "Dorp", "Gehucht",
+    "Boerderij", "Veld", "Bos", "Woestijn", "Eiland", "Strand", "Golf", "Lucht",
+    "Wolk", "Regen", "Sneeuw", "Wind", "Storm", "Zon", "Licht", "Donker",
+    "Dag", "Nacht", "Ochtend", "Avond", "Week", "Maand", "Jaar", "Datum",
+    "Klok", "Horloge", "Telefoon", "Computer", "TV", "Radio", "Foto", "Verf",
+    "Lied", "Dans", "Film", "Spel", "Sport", "Bal", "Doel", "Team",
+    "Winst", "Verlies", "Spelen", "Werk", "Slapen", "Droom", "Praten", "Zingen",
+    "Lezen", "Schrijven", "Tekenen", "Rennen", "Lopen", "Springen", "Zwemmen", "Vliegen",
+    "Glimlach", "Lachen", "Huilen", "Verdriet", "Blij", "Boos", "Angst", "Vreugde",
+    "Fiets", "Bakker", "Winkel", "Markt", "Haven", "Kerk", "Museum", "Park",
+    "Bibliotheek", "Ziekenhuis", "Restaurant", "Café", "Hotel", "Station", "Luchthaven", "Taxi",
+    "Bus", "Metro", "Tram", "Snelweg", "Rotonde", "Stoplicht", "Zebrapad", "Parkeerplaats",
+    "Benzine", "Garage", "Werkplaats", "Fabriek", "Kantoor", "Vergadering", "Computer", "Printer",
+    "Toetsenbord", "Muis", "Monitor", "Laptop", "Tablet", "Smartphone", "Internet", "Website",
+    "Email", "Bericht", "Foto", "Video", "Muziek", "Podcast", "Nieuws", "Krant",
+    "Tijdschrift", "Boek", "Roman", "Gedicht", "Verhaal", "Brief", "Kaart", "Cadeau",
+    "Verjaardag", "Feest", "Bruiloft", "Vakantie", "Weekend", "Uitstapje", "Reis", "Koffer",
+    "Paspoort", "Ticket", "Reservering", "Camping", "Tent", "Rugzak", "Wandeling", "Natuur",
+    "Dier", "Insect", "Vlinder", "Libel", "Kever", "Wesp", "Hommel", "Rups",
+    "Bloem", "Plant", "Struik", "Gras", "Blad", "Tak", "Wortel", "Zaad",
+    "Groente", "Wortel", "Ui", "Aardappel", "Tomaat", "Komkommer", "Sla", "Peper",
+    "Knoflook", "Peterselie", "Basilicum", "Oregano", "Rozemarijn", "Tijm", "Zout", "Suiker",
+    "Meel", "Boter", "Olie", "Azijn", "Mosterd", "Ketchup", "Mayonaise", "Saus",
+    "Soep", "Salade", "Sandwich", "Pasta", "Rijst", "Aardappel", "Vlees", "Kip",
+    "Rundvlees", "Varkensvlees", "Vis", "Zalm", "Tonijn", "Garnaal", "Mosselen", "Oesters",
+    "Ijs", "Chocola", "Koekje", "Taart", "Gebak", "Snoep", "Fruit", "Appel",
+    "Banaan", "Sinaasappel", "Citroen", "Aardbei", "Framboos", "Blauwe", "Druif", "Meloen"
+];
+
+// Get the current word list based on user preference or game state
+function getCurrentWordList() {
+    // If we're in a game, use the deck from the game state
+    const selectedDeck = state.wordDeck || localStorage.getItem('justOneWordDeck') || 'english';
+    return selectedDeck === 'dutch' ? DUTCH_WORD_LIST : ENGLISH_WORD_LIST;
+}
 
 // --- DOM ELEMENTS ---
 const scoreEl = document.getElementById('score');
@@ -53,10 +105,11 @@ let state = {
 // --- FUNCTIONS ---
 
 /**
- * Gets N unique random words from the master list.
+ * Gets N unique random words from the selected word list.
  */
 function getRandomWords(numWords) {
-    const shuffled = [...MASTER_WORD_LIST].sort(() => 0.5 - Math.random());
+    const wordList = getCurrentWordList();
+    const shuffled = [...wordList].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, numWords);
 }
 
@@ -109,6 +162,8 @@ function initGame(loadSaved = false) {
     state.score = 0;
     state.cardIndex = 0;
     state.cards = [];
+    state.wordDeck = localStorage.getItem('justOneWordDeck') || 'english'; // Store which deck is being used
+    
     for (let i = 0; i < 13; i++) {
         state.cards.push({
             id: i,
