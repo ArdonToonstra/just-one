@@ -29,12 +29,19 @@ const MASTER_WORD_LIST = [
 const scoreEl = document.getElementById('score');
 const cardsRemainingEl = document.getElementById('cards-remaining');
 const cardContainerEl = document.getElementById('card-container');
+const swipeHintEl = document.getElementById('swipe-hint');
 
 // Modal elements
 const gameOverModal = document.getElementById('game-over-modal');
 const finalScoreEl = document.getElementById('final-score');
 const finalMessageEl = document.getElementById('final-message');
 const playAgainBtn = document.getElementById('play-again-btn');
+
+// Touch/swipe handling variables
+let touchStartX = 0;
+let touchStartY = 0;
+let currentCard = null;
+let isSwipeEnabled = false;
 
 // --- GAME STATE ---
 let state = {
@@ -84,6 +91,19 @@ function render() {
     // Clear and render card
     cardContainerEl.innerHTML = createCardHTML(state.cards[state.cardIndex]);
 
+    // Show/hide swipe hint based on card status
+    const currentCard = state.cards[state.cardIndex];
+    if (currentCard && currentCard.status === 'guessing') {
+        swipeHintEl.classList.remove('hidden');
+        isSwipeEnabled = true;
+    } else {
+        swipeHintEl.classList.add('hidden');
+        isSwipeEnabled = false;
+    }
+
+    // Set up touch listeners for the current card if swipeable
+    setupTouchListeners();
+
     // Check for game over
     if (state.cardIndex === 13) {
         showGameOverModal();
@@ -97,36 +117,41 @@ function createCardHTML(card) {
     if (!card) return '';
 
     let content = '';
-    let baseClasses = 'card rounded-xl shadow-lg flex flex-col justify-between items-center p-3 min-h-[350px] w-[450px] transition-all';
-
+    
     switch (card.status) {
         case 'hidden':
             content = `
-                <div class="${baseClasses} bg-cyan-600 cursor-pointer hover:bg-cyan-500">
-                    <span class="text-3xl font-bold">Card ${card.id + 1}</span>
-                    <button data-id="${card.id}" data-action="reveal" 
-                            class="bg-white text-cyan-700 font-semibold py-2 px-4 rounded-lg w-full">
-                        Reveal
-                    </button>
+                <div class="card card-hidden card-enter flex flex-col justify-center items-center p-6" data-id="${card.id}">
+                    <div class="text-center">
+                        <div class="text-6xl mb-4">🎴</div>
+                        <h2 class="text-3xl font-bold mb-4">Card ${card.id + 1}</h2>
+                        <p class="text-lg mb-6 opacity-90">Ready to reveal the words?</p>
+                        <button data-id="${card.id}" data-action="reveal" class="btn-primary">
+                            ✨ Reveal Words
+                        </button>
+                    </div>
                 </div>
             `;
             break;
 
         case 'revealed':
             const wordsHTML = card.words.map((word, i) =>
-                `<li class="text-lg py-1 px-2 rounded bg-gray-700 word-item">
-                    <span class="font-bold text-cyan-300">${i + 1}.</span> ${word}
-                </li>`
+                `<div class="word-item">
+                    <span class="font-bold text-blue-300">${i + 1}.</span> ${word}
+                </div>`
             ).join('');
 
             content = `
-                <div class="${baseClasses} bg-gray-800 border border-gray-700">
-                    <ol class="list-none space-y-2 w-full mb-3">
+                <div class="card card-revealed card-enter flex flex-col p-6" data-id="${card.id}">
+                    <div class="text-center mb-4">
+                        <h3 class="text-xl font-bold text-white mb-2">Words for Card ${card.id + 1}</h3>
+                        <p class="text-sm text-gray-300 opacity-80">Write your clues, then proceed</p>
+                    </div>
+                    <div class="flex-grow space-y-2 mb-6">
                         ${wordsHTML}
-                    </ol>
-                    <button data-id="${card.id}" data-action="proceed" 
-                            class="bg-cyan-600 hover:bg-cyan-700 font-bold py-2 px-3 rounded-lg w-full">
-                        Proceed to Guessing
+                    </div>
+                    <button data-id="${card.id}" data-action="proceed" class="btn-primary">
+                        🎯 Start Guessing Phase
                     </button>
                 </div>
             `;
@@ -134,24 +159,30 @@ function createCardHTML(card) {
 
         case 'guessing':
             content = `
-                <div class="${baseClasses} bg-gray-800 border border-gray-700">
-                    <div class="flex flex-col items-center justify-center h-full">
-                        <p class="text-2xl text-gray-400 mb-4">Guesser, make your guess!</p>
-                        <div class="grid grid-cols-2 gap-2 w-full">
-                            <button data-id="${card.id}" data-action="success" 
-                                    class="bg-green-600 hover:bg-green-500 font-bold py-2 px-3 rounded-lg w-full">
-                                Success
-                            </button>
-                            <button data-id="${card.id}" data-action="fail" 
-                                    class="bg-red-600 hover:bg-red-500 font-bold py-2 px-3 rounded-lg w-full">
-                                Fail
-                            </button>
-                        </div>
-                        <button data-id="${card.id}" data-action="reveal" 
-                                class="mt-4 text-cyan-400 hover:text-cyan-300 transition-colors">
-                            Show Words Again
+                <div class="card card-guessing card-enter flex flex-col justify-center items-center p-6" 
+                     data-id="${card.id}" data-swipeable="true">
+                    <div class="swipe-indicator left">❌</div>
+                    <div class="swipe-indicator right">✅</div>
+                    
+                    <div class="text-center mb-6">
+                        <div class="text-6xl mb-4">🤔</div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Time to Guess!</h3>
+                        <p class="text-gray-300">Did the guesser get it right?</p>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button data-id="${card.id}" data-action="fail" class="btn-danger">
+                            ❌ Failed
+                        </button>
+                        <button data-id="${card.id}" data-action="success" class="btn-success">
+                            ✅ Success
                         </button>
                     </div>
+                    
+                    <button data-id="${card.id}" data-action="reveal" 
+                            class="mt-4 text-blue-300 hover:text-blue-200 transition-colors text-sm opacity-70">
+                        👁️ Show Words Again
+                    </button>
                 </div>
             `;
             break;
@@ -170,12 +201,16 @@ function createCardHTML(card) {
  */
 function showGameOverModal() {
     finalScoreEl.textContent = state.score;
-    let message = "Good effort!";
-    if (state.score >= 12) message = "Perfect game! Incredible!";
-    else if (state.score >= 10) message = "Amazing job!";
-    else if (state.score >= 8) message = "Great teamwork!";
+    
+    let message = "Good effort! Keep practicing!";
+    if (state.score === 13) message = "🏆 Perfect game! Absolutely incredible teamwork!";
+    else if (state.score >= 12) message = "🌟 Almost perfect! Outstanding performance!";
+    else if (state.score >= 10) message = "🎯 Amazing job! Excellent communication!";
+    else if (state.score >= 8) message = "👏 Great teamwork! Well done!";
+    else if (state.score >= 6) message = "👍 Good effort! Room for improvement!";
+    else if (state.score >= 4) message = "💪 Keep trying! Practice makes perfect!";
+    
     finalMessageEl.textContent = message;
-
     gameOverModal.classList.remove('hidden');
 }
 
@@ -188,8 +223,15 @@ function handleCardClick(e) {
 
     const action = target.dataset.action;
     const id = parseInt(target.dataset.id);
-    const card = state.cards.find(c => c.id === id);
+    
+    handleCardAction(action, id);
+}
 
+/**
+ * Handles card actions (from both clicks and swipes)
+ */
+function handleCardAction(action, id) {
+    const card = state.cards.find(c => c.id === id);
     if (!card || !action) return;
 
     switch (action) {
@@ -205,13 +247,134 @@ function handleCardClick(e) {
             card.status = 'success';
             state.score++;
             state.cardIndex++;
-            render();
+            showFeedback('success');
+            setTimeout(() => render(), 800);
             break;
         case 'fail':
             card.status = 'fail';
             state.cardIndex++;
-            render();
+            showFeedback('fail');
+            setTimeout(() => render(), 800);
             break;
+    }
+}
+
+/**
+ * Shows visual feedback for success/fail actions
+ */
+function showFeedback(type) {
+    const cardElement = cardContainerEl.querySelector('.card');
+    if (!cardElement) return;
+
+    if (type === 'success') {
+        cardElement.classList.add('swipe-success');
+    } else {
+        cardElement.classList.add('swipe-fail');
+    }
+}
+
+/**
+ * Sets up touch event listeners for swipe functionality
+ */
+function setupTouchListeners() {
+    const cardElement = cardContainerEl.querySelector('[data-swipeable="true"]');
+    if (!cardElement) return;
+
+    currentCard = cardElement;
+
+    // Remove existing listeners to prevent duplicates
+    cardElement.removeEventListener('touchstart', handleTouchStart);
+    cardElement.removeEventListener('touchmove', handleTouchMove);
+    cardElement.removeEventListener('touchend', handleTouchEnd);
+
+    // Add new listeners
+    cardElement.addEventListener('touchstart', handleTouchStart, { passive: false });
+    cardElement.addEventListener('touchmove', handleTouchMove, { passive: false });
+    cardElement.addEventListener('touchend', handleTouchEnd, { passive: false });
+}
+
+/**
+ * Handle touch start
+ */
+function handleTouchStart(e) {
+    if (!isSwipeEnabled) return;
+    
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    
+    currentCard.classList.add('swiping');
+}
+
+/**
+ * Handle touch move
+ */
+function handleTouchMove(e) {
+    if (!isSwipeEnabled || !currentCard) return;
+    
+    e.preventDefault(); // Prevent scrolling
+    
+    const touchX = e.touches[0].clientX;
+    const touchY = e.touches[0].clientY;
+    const deltaX = touchX - touchStartX;
+    const deltaY = touchY - touchStartY;
+    
+    // Only handle horizontal swipes (ignore vertical)
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        const rotation = deltaX * 0.1; // Subtle rotation effect
+        currentCard.style.transform = `translateX(${deltaX * 0.5}px) rotate(${rotation}deg)`;
+        
+        // Show swipe indicators
+        const leftIndicator = currentCard.querySelector('.swipe-indicator.left');
+        const rightIndicator = currentCard.querySelector('.swipe-indicator.right');
+        
+        if (deltaX < -50) {
+            leftIndicator.style.opacity = Math.min(1, Math.abs(deltaX) / 100);
+            rightIndicator.style.opacity = 0;
+            currentCard.style.background = 'var(--danger-gradient)';
+        } else if (deltaX > 50) {
+            rightIndicator.style.opacity = Math.min(1, deltaX / 100);
+            leftIndicator.style.opacity = 0;
+            currentCard.style.background = 'var(--success-gradient)';
+        } else {
+            leftIndicator.style.opacity = 0;
+            rightIndicator.style.opacity = 0;
+            currentCard.style.background = '';
+        }
+    }
+}
+
+/**
+ * Handle touch end
+ */
+function handleTouchEnd(e) {
+    if (!isSwipeEnabled || !currentCard) return;
+    
+    const touchEndX = e.changedTouches[0].clientX;
+    const deltaX = touchEndX - touchStartX;
+    const threshold = 100; // Minimum swipe distance
+    
+    currentCard.classList.remove('swiping');
+    
+    // Reset visual state
+    currentCard.style.transform = '';
+    currentCard.style.background = '';
+    
+    const leftIndicator = currentCard.querySelector('.swipe-indicator.left');
+    const rightIndicator = currentCard.querySelector('.swipe-indicator.right');
+    leftIndicator.style.opacity = 0;
+    rightIndicator.style.opacity = 0;
+    
+    // Check if swipe was significant enough
+    if (Math.abs(deltaX) > threshold) {
+        const cardId = parseInt(currentCard.dataset.id);
+        
+        if (deltaX > 0) {
+            // Swiped right - success
+            handleCardAction('success', cardId);
+        } else {
+            // Swiped left - fail
+            handleCardAction('fail', cardId);
+        }
     }
 }
 
