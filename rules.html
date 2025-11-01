@@ -35,35 +35,137 @@
             </div>
         </header>
 
-        <div class="rules-container p-6 prose prose-invert max-w-none">
-            <h2>Objective</h2>
-            <p>Just One is a cooperative party game. All players play together to get the best score! Together, you make one player guess a Mystery word by secretly writing a clue. Choose your clue without coordinating with each other and be unique, because all identical clues will be canceled!</p>
+        <!-- Rules Content -->
+        <div class="rules-grid">
+            <!-- Objective Section -->
+            <div class="rules-section">
+                <div class="rules-section-header">
+                    <div class="rules-icon">🎯</div>
+                    <h2>Objective</h2>
+                </div>
+                <div class="rules-content">
+                    <p>Just One is a <strong>cooperative party game</strong> where all players work together to achieve the best score! Your mission is to help one player guess a mystery word by writing unique clues.</p>
+                    <div class="highlight-box">
+                        <strong>Key Rule:</strong> Be unique! Identical clues are canceled out.
+                    </div>
+                </div>
+            </div>
 
-            <h2>Setup</h2>
-            <ul>
-                <li>Shuffle the cards and draw 13 to form a face-down deck.</li>
-                <li>Each player takes an easel and a marker.</li>
-                <li>Choose a player to be the first guesser.</li>
-            </ul>
+            <!-- Setup Section -->
+            <div class="rules-section">
+                <div class="rules-section-header">
+                    <div class="rules-icon">⚙️</div>
+                    <h2>Setup</h2>
+                </div>
+                <div class="rules-content">
+                    <div class="setup-steps">
+                        <div class="setup-step">
+                            <span class="step-number">1</span>
+                            <span>Draw 13 cards to form a face-down deck</span>
+                        </div>
+                        <div class="setup-step">
+                            <span class="step-number">2</span>
+                            <span>Each player gets an easel and marker</span>
+                        </div>
+                        <div class="setup-step">
+                            <span class="step-number">3</span>
+                            <span>Choose the first guesser</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            <h2>Gameplay (per round)</h2>
-            <ol>
-                <li>The active player draws a card and chooses a number from 1 to 5. This is the Mystery word for the round.</li>
-                <li>The other players secretly write a one-word clue on their easels.</li>
-                <li>Once everyone has written their clue, the active player closes their eyes. All other players reveal their clues to each other.</li>
-                <li>All identical clues are canceled. For example, if two players write "Movie", both clues are canceled.</li>
-                <li>The active player opens their eyes and tries to guess the Mystery word with the remaining clues.</li>
-            </ol>
+            <!-- Gameplay Section -->
+            <div class="rules-section">
+                <div class="rules-section-header">
+                    <div class="rules-icon">🎮</div>
+                    <h2>Gameplay</h2>
+                </div>
+                <div class="rules-content">
+                    <div class="gameplay-steps">
+                        <div class="gameplay-step">
+                            <div class="step-circle">1</div>
+                            <div class="step-content">
+                                <strong>Draw & Choose</strong>
+                                <p>Active player draws a card and picks a number (1-5). This is the mystery word!</p>
+                            </div>
+                        </div>
+                        <div class="gameplay-step">
+                            <div class="step-circle">2</div>
+                            <div class="step-content">
+                                <strong>Write Clues</strong>
+                                <p>Other players secretly write <em>one-word</em> clues on their easels.</p>
+                            </div>
+                        </div>
+                        <div class="gameplay-step">
+                            <div class="step-circle">3</div>
+                            <div class="step-content">
+                                <strong>Eyes Closed</strong>
+                                <p>Guesser closes eyes while others reveal clues to each other.</p>
+                            </div>
+                        </div>
+                        <div class="gameplay-step">
+                            <div class="step-circle">4</div>
+                            <div class="step-content">
+                                <strong>Cancel Duplicates</strong>
+                                <p>Remove all identical clues (e.g., two "Movie" clues = both canceled).</p>
+                            </div>
+                        </div>
+                        <div class="gameplay-step">
+                            <div class="step-circle">5</div>
+                            <div class="step-content">
+                                <strong>Guess Time!</strong>
+                                <p>Guesser opens eyes and tries to guess using remaining clues.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            <h2>Guessing</h2>
-            <ul>
-                <li><strong>Correct Guess:</strong> If the guess is correct, the card is added to the score pile.</li>
-                <li><strong>Incorrect Guess:</strong> If the guess is incorrect, the current card and the top card of the deck are discarded.</li>
-                <li><strong>Pass:</strong> The guesser can choose to pass. In this case, only the current card is discarded.</li>
-            </ul>
+            <!-- Results Section -->
+            <div class="rules-section">
+                <div class="rules-section-header">
+                    <div class="rules-icon">📊</div>
+                    <h2>Results</h2>
+                </div>
+                <div class="rules-content">
+                    <div class="results-grid">
+                        <div class="result-card success">
+                            <div class="result-icon">✅</div>
+                            <div class="result-title">Correct Guess</div>
+                            <div class="result-description">Card added to score pile (+1 point)</div>
+                        </div>
+                        <div class="result-card danger">
+                            <div class="result-icon">❌</div>
+                            <div class="result-title">Wrong Guess</div>
+                            <div class="result-description">Current card AND next card discarded (-2 cards)</div>
+                        </div>
+                        <div class="result-card neutral">
+                            <div class="result-icon">⏭️</div>
+                            <div class="result-title">Pass</div>
+                            <div class="result-description">Only current card discarded (-1 card)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            <h2>End of the Game</h2>
-            <p>The game ends when the deck is empty. The final score is the number of correctly guessed cards.</p>
+            <!-- End Game Section -->
+            <div class="rules-section">
+                <div class="rules-section-header">
+                    <div class="rules-icon">🏁</div>
+                    <h2>End of Game</h2>
+                </div>
+                <div class="rules-content">
+                    <p>The game ends when the deck is empty. Your <strong>final score</strong> is the number of correctly guessed cards.</p>
+                    <div class="score-guide">
+                        <div class="score-range perfect">13: Perfect! 🏆</div>
+                        <div class="score-range excellent">10-12: Excellent 🌟</div>
+                        <div class="score-range good">8-9: Great teamwork 👏</div>
+                        <div class="score-range okay">6-7: Good effort 👍</div>
+                        <div class="score-range practice">0-5: Keep practicing! 💪</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Bottom Navigation -->
