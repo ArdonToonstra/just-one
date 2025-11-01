@@ -1,0 +1,20 @@
+/* 3. Set base styles */
+body {
+    font-family: 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.card {
+    min-height: 350px;
+    width: 450px;
+}
+
+.word-item {
+    font-size: 1.25rem; /* 20px */
+}
+
+.hidden {
+    display: none;
+}
+
+/* Using Tailwind CSS classes directly in the HTML for most styling */
