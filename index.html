@@ -8,21 +8,39 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
+        .hero-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 3rem;
+            box-shadow: var(--card-shadow);
+        }
+        .hero-title {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
     </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center">
+<body class="min-h-screen text-white flex items-center justify-center p-4">
 
-    <div class="text-center">
-        <h1 class="text-5xl font-bold text-cyan-400 mb-4">Just One</h1>
-        <p class="text-xl text-gray-300 mb-8">A cooperative party game where you try to guess a secret word.</p>
-        <a href="game.html" class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 px-6 rounded-lg text-xl transition-colors">
-            Start Game
+    <div class="hero-container text-center max-w-md">
+        <div class="text-6xl mb-4">🎲</div>
+        <h1 class="hero-title text-5xl font-bold mb-4">Just One</h1>
+        <p class="text-lg text-gray-300 mb-8">A cooperative party game where you try to guess mystery words using unique clues.</p>
+        <a href="game.html" class="btn-primary text-xl mb-4 inline-block w-full">
+            🎮 Start Game
         </a>
-        <a href="rules.html" class="mt-4 inline-block text-cyan-400 hover:text-cyan-300 transition-colors">How to Play</a>
+        <a href="rules.html" class="btn-secondary text-base inline-block w-full">
+            📖 How to Play
+        </a>
     </div>
 
 </body>

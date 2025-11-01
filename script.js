@@ -172,15 +172,20 @@ function createCardHTML(card) {
                     
                     <div class="action-buttons">
                         <button data-id="${card.id}" data-action="fail" class="btn-danger">
-                            ❌ Failed
+                            ❌ Wrong Guess
                         </button>
                         <button data-id="${card.id}" data-action="success" class="btn-success">
-                            ✅ Success
+                            ✅ Correct
                         </button>
                     </div>
                     
+                    <button data-id="${card.id}" data-action="pass" 
+                            class="mt-3 btn-secondary w-full">
+                        ⏭️ Pass (Skip Card)
+                    </button>
+                    
                     <button data-id="${card.id}" data-action="reveal" 
-                            class="mt-4 text-blue-300 hover:text-blue-200 transition-colors text-sm opacity-70">
+                            class="mt-2 text-blue-300 hover:text-blue-200 transition-colors text-sm opacity-70">
                         👁️ Show Words Again
                     </button>
                 </div>
@@ -247,30 +252,67 @@ function handleCardAction(action, id) {
             card.status = 'success';
             state.score++;
             state.cardIndex++;
-            showFeedback('success');
-            setTimeout(() => render(), 800);
+            showFeedback('success', 'Correct! +1 point');
+            setTimeout(() => render(), 1000);
             break;
         case 'fail':
+            // Wrong guess: discard current card AND next card (2 cards total)
             card.status = 'fail';
+            const cardsLost = Math.min(2, 13 - state.cardIndex); // Don't go beyond available cards
+            state.cardIndex += cardsLost;
+            showFeedback('fail', `Wrong guess! Lost ${cardsLost} card${cardsLost > 1 ? 's' : ''}`);
+            setTimeout(() => render(), 1200);
+            break;
+        case 'pass':
+            // Pass: only discard current card (1 card)
+            card.status = 'pass';
             state.cardIndex++;
-            showFeedback('fail');
-            setTimeout(() => render(), 800);
+            showFeedback('pass', 'Passed - Lost 1 card');
+            setTimeout(() => render(), 1000);
             break;
     }
 }
 
 /**
- * Shows visual feedback for success/fail actions
+ * Shows visual feedback for success/fail/pass actions
  */
-function showFeedback(type) {
+function showFeedback(type, message = '') {
     const cardElement = cardContainerEl.querySelector('.card');
     if (!cardElement) return;
 
-    if (type === 'success') {
-        cardElement.classList.add('swipe-success');
-    } else {
-        cardElement.classList.add('swipe-fail');
+    // Create feedback overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'feedback-overlay';
+    
+    let emoji, bgClass, textMessage;
+    
+    switch (type) {
+        case 'success':
+            emoji = '🎉';
+            bgClass = 'swipe-success';
+            textMessage = message || 'Correct!';
+            break;
+        case 'fail':
+            emoji = '💔';
+            bgClass = 'swipe-fail';
+            textMessage = message || 'Wrong guess!';
+            break;
+        case 'pass':
+            emoji = '⏭️';
+            bgClass = 'swipe-pass';
+            textMessage = message || 'Passed';
+            break;
     }
+    
+    overlay.innerHTML = `
+        <div class="feedback-content">
+            <div class="feedback-emoji">${emoji}</div>
+            <div class="feedback-message">${textMessage}</div>
+        </div>
+    `;
+    
+    cardElement.classList.add(bgClass);
+    cardElement.appendChild(overlay);
 }
 
 /**
@@ -318,27 +360,50 @@ function handleTouchMove(e) {
     const deltaX = touchX - touchStartX;
     const deltaY = touchY - touchStartY;
     
-    // Only handle horizontal swipes (ignore vertical)
+    // Handle both horizontal and vertical swipes
+    const leftIndicator = currentCard.querySelector('.swipe-indicator.left');
+    const rightIndicator = currentCard.querySelector('.swipe-indicator.right');
+    
+    // Reset all indicators
+    leftIndicator.style.opacity = 0;
+    rightIndicator.style.opacity = 0;
+    currentCard.style.background = '';
+    currentCard.style.transform = '';
+    
+    // Determine primary swipe direction
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        const rotation = deltaX * 0.1; // Subtle rotation effect
+        // Horizontal swipe
+        const rotation = deltaX * 0.1;
         currentCard.style.transform = `translateX(${deltaX * 0.5}px) rotate(${rotation}deg)`;
         
-        // Show swipe indicators
-        const leftIndicator = currentCard.querySelector('.swipe-indicator.left');
-        const rightIndicator = currentCard.querySelector('.swipe-indicator.right');
-        
         if (deltaX < -50) {
+            // Swipe left - Wrong guess
             leftIndicator.style.opacity = Math.min(1, Math.abs(deltaX) / 100);
-            rightIndicator.style.opacity = 0;
             currentCard.style.background = 'var(--danger-gradient)';
         } else if (deltaX > 50) {
+            // Swipe right - Success
             rightIndicator.style.opacity = Math.min(1, deltaX / 100);
-            leftIndicator.style.opacity = 0;
             currentCard.style.background = 'var(--success-gradient)';
-        } else {
-            leftIndicator.style.opacity = 0;
-            rightIndicator.style.opacity = 0;
-            currentCard.style.background = '';
+        }
+    } else if (Math.abs(deltaY) > 50) {
+        // Vertical swipe
+        if (deltaY < 0) {
+            // Swipe up - Pass
+            currentCard.style.transform = `translateY(${deltaY * 0.5}px)`;
+            currentCard.style.background = 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)';
+            
+            // Show pass indicator in center
+            const passIndicator = currentCard.querySelector('.pass-indicator') || 
+                (() => {
+                    const indicator = document.createElement('div');
+                    indicator.className = 'swipe-indicator pass-indicator';
+                    indicator.style.cssText = 'top: 20px; left: 50%; transform: translateX(-50%); font-size: 2rem; font-weight: bold; color: #9ca3af;';
+                    indicator.textContent = '⏭️';
+                    currentCard.appendChild(indicator);
+                    return indicator;
+                })();
+            
+            passIndicator.style.opacity = Math.min(1, Math.abs(deltaY) / 100);
         }
     }
 }
@@ -350,7 +415,9 @@ function handleTouchEnd(e) {
     if (!isSwipeEnabled || !currentCard) return;
     
     const touchEndX = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
     const deltaX = touchEndX - touchStartX;
+    const deltaY = touchEndY - touchStartY;
     const threshold = 100; // Minimum swipe distance
     
     currentCard.classList.remove('swiping');
@@ -361,13 +428,23 @@ function handleTouchEnd(e) {
     
     const leftIndicator = currentCard.querySelector('.swipe-indicator.left');
     const rightIndicator = currentCard.querySelector('.swipe-indicator.right');
+    const passIndicator = currentCard.querySelector('.pass-indicator');
+    
     leftIndicator.style.opacity = 0;
     rightIndicator.style.opacity = 0;
+    if (passIndicator) passIndicator.style.opacity = 0;
     
-    // Check if swipe was significant enough
-    if (Math.abs(deltaX) > threshold) {
-        const cardId = parseInt(currentCard.dataset.id);
-        
+    const cardId = parseInt(currentCard.dataset.id);
+    
+    // Determine which swipe was performed
+    if (Math.abs(deltaY) > threshold && Math.abs(deltaY) > Math.abs(deltaX)) {
+        // Vertical swipe takes priority if both are above threshold
+        if (deltaY < 0) {
+            // Swiped up - pass
+            handleCardAction('pass', cardId);
+        }
+    } else if (Math.abs(deltaX) > threshold) {
+        // Horizontal swipe
         if (deltaX > 0) {
             // Swiped right - success
             handleCardAction('success', cardId);
