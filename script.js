@@ -1,139 +1,44 @@
-const ENGLISH_WORD_LIST = [
-    "Apple", "Music", "River", "Mountain", "Ocean", "Star", "Sun", "Moon",
-    "Book", "Key", "Tree", "Flower", "Bridge", "Road", "Car", "Train",
-    "Boat", "Plane", "Bird", "Cat", "Dog", "Fish", "Lion", "Tiger",
-    "Bear", "Horse", "Cow", "Pig", "Sheep", "Goat", "Duck", "Frog",
-    "Snake", "Spider", "Ant", "Bee", "Fly", "Baby", "Child", "Man",
-    "Woman", "Doctor", "Police", "Fire", "Water", "Earth", "Air",
-    "Love", "Hate", "War", "Peace", "Life", "Death", "Time", "Space",
-    "Art", "Color", "Red", "Green", "Blue", "Yellow", "Black", "White",
-    "Food", "Bread", "Cheese", "Milk", "Egg", "Meat", "Fruit", "Pizza",
-    "Heart", "Mind", "Soul", "Body", "Hand", "Foot", "Eye", "Ear",
-    "Nose", "Mouth", "Tooth", "Hair", "Blood", "Bone", "Skin", "Gold",
-    "Silver", "Iron", "Steel", "Wood", "Glass", "Paper", "Stone", "Rock",
-    "Sand", "Clay", "Cloth", "Silk", "Wool", "Cotton", "Money", "Coin",
-    "King", "Queen", "Prince", "Princess", "Castle", "Sword", "Shield", "War",
-    "School", "Teacher", "Student", "Desk", "Chair", "Door", "Window", "Wall",
-    "Floor", "Roof", "Room", "Home", "House", "City", "Town", "Village",
-    "Farm", "Field", "Forest", "Desert", "Island", "Beach", "Wave", "Sky",
-    "Cloud", "Rain", "Snow", "Wind", "Storm", "Sun", "Light", "Dark",
-    "Day", "Night", "Morning", "Evening", "Week", "Month", "Year", "Date",
-    "Clock", "Watch", "Phone", "Computer", "TV", "Radio", "Photo", "Paint",
-    "Song", "Dance", "Movie", "Game", "Sport", "Ball", "Goal", "Team",
-    "Win", "Loss", "Play", "Work", "Sleep", "Dream", "Talk", "Sing",
-    "Read", "Write", "Draw", "Run", "Walk", "Jump", "Swim", "Fly",
-    "Smile", "Laugh", "Cry", "Sad", "Happy", "Angry", "Fear", "Joy"
-];
-
-const DUTCH_WORD_LIST = [
-    "Appel", "Muziek", "Rivier", "Berg", "Oceaan", "Ster", "Zon", "Maan",
-    "Boek", "Sleutel", "Boom", "Bloem", "Brug", "Weg", "Auto", "Trein",
-    "Boot", "Vliegtuig", "Vogel", "Kat", "Hond", "Vis", "Leeuw", "Tijger",
-    "Beer", "Paard", "Koe", "Varken", "Schaap", "Geit", "Eend", "Kikker",
-    "Slang", "Spin", "Mier", "Bij", "Vlieg", "Baby", "Kind", "Man",
-    "Vrouw", "Dokter", "Politie", "Vuur", "Water", "Aarde", "Lucht",
-    "Liefde", "Haat", "Oorlog", "Vrede", "Leven", "Dood", "Tijd", "Ruimte",
-    "Kunst", "Kleur", "Rood", "Groen", "Blauw", "Geel", "Zwart", "Wit",
-    "Eten", "Brood", "Kaas", "Melk", "Ei", "Vlees", "Fruit", "Pizza",
-    "Hart", "Geest", "Ziel", "Lichaam", "Hand", "Voet", "Oog", "Oor",
-    "Neus", "Mond", "Tand", "Haar", "Bloed", "Bot", "Huid", "Goud",
-    "Zilver", "IJzer", "Staal", "Hout", "Glas", "Papier", "Steen", "Rots",
-    "Zand", "Klei", "Doek", "Zijde", "Wol", "Katoen", "Geld", "Munt",
-    "Koning", "Koningin", "Prins", "Prinses", "Kasteel", "Zwaard", "Schild", "Oorlog",
-    "School", "Leraar", "Student", "Bureau", "Stoel", "Deur", "Raam", "Muur",
-    "Vloer", "Dak", "Kamer", "Thuis", "Huis", "Stad", "Dorp", "Gehucht",
-    "Boerderij", "Veld", "Bos", "Woestijn", "Eiland", "Strand", "Golf", "Lucht",
-    "Wolk", "Regen", "Sneeuw", "Wind", "Storm", "Zon", "Licht", "Donker",
-    "Dag", "Nacht", "Ochtend", "Avond", "Week", "Maand", "Jaar", "Datum",
-    "Klok", "Horloge", "Telefoon", "Computer", "TV", "Radio", "Foto", "Verf",
-    "Lied", "Dans", "Film", "Spel", "Sport", "Bal", "Doel", "Team",
-    "Winst", "Verlies", "Spelen", "Werk", "Slapen", "Droom", "Praten", "Zingen",
-    "Lezen", "Schrijven", "Tekenen", "Rennen", "Lopen", "Springen", "Zwemmen", "Vliegen",
-    "Glimlach", "Lachen", "Huilen", "Verdriet", "Blij", "Boos", "Angst", "Vreugde",
-    "Fiets", "Bakker", "Winkel", "Markt", "Haven", "Kerk", "Museum", "Park",
-    "Bibliotheek", "Ziekenhuis", "Restaurant", "Café", "Hotel", "Station", "Luchthaven", "Taxi",
-    "Bus", "Metro", "Tram", "Snelweg", "Rotonde", "Stoplicht", "Zebrapad", "Parkeerplaats",
-    "Benzine", "Garage", "Werkplaats", "Fabriek", "Kantoor", "Vergadering", "Computer", "Printer",
-    "Toetsenbord", "Muis", "Monitor", "Laptop", "Tablet", "Smartphone", "Internet", "Website",
-    "Email", "Bericht", "Foto", "Video", "Muziek", "Podcast", "Nieuws", "Krant",
-    "Tijdschrift", "Boek", "Roman", "Gedicht", "Verhaal", "Brief", "Kaart", "Cadeau",
-    "Verjaardag", "Feest", "Bruiloft", "Vakantie", "Weekend", "Uitstapje", "Reis", "Koffer",
-    "Paspoort", "Ticket", "Reservering", "Camping", "Tent", "Rugzak", "Wandeling", "Natuur",
-    "Dier", "Insect", "Vlinder", "Libel", "Kever", "Wesp", "Hommel", "Rups",
-    "Bloem", "Plant", "Struik", "Gras", "Blad", "Tak", "Wortel", "Zaad",
-    "Groente", "Wortel", "Ui", "Aardappel", "Tomaat", "Komkommer", "Sla", "Peper",
-    "Knoflook", "Peterselie", "Basilicum", "Oregano", "Rozemarijn", "Tijm", "Zout", "Suiker",
-    "Meel", "Boter", "Olie", "Azijn", "Mosterd", "Ketchup", "Mayonaise", "Saus",
-    "Soep", "Salade", "Sandwich", "Pasta", "Rijst", "Aardappel", "Vlees", "Kip",
-    "Rundvlees", "Varkensvlees", "Vis", "Zalm", "Tonijn", "Garnaal", "Mosselen", "Oesters",
-    "Ijs", "Chocola", "Koekje", "Taart", "Gebak", "Snoep", "Fruit", "Appel",
-    "Banaan", "Sinaasappel", "Citroen", "Aardbei", "Framboos", "Blauwe", "Druif", "Meloen"
-];
-
-const ENGLISH_ADVANCED_WORD_LIST = [
-    "Algorithm", "Paradigm", "Synergy", "Leverage", "Cryptocurrency", "Blockchain", "Metadata", "Infrastructure",
-    "Optimization", "Scalability", "Bandwidth", "Protocol", "Architecture", "Framework", "Middleware", "Interface",
-    "Ecosystem", "Analytics", "Stakeholder", "Methodology", "Derivative", "Portfolio", "Volatility", "Equity",
-    "Benchmark", "Virtualization", "Encryption", "Authentication", "Authorization", "Firewall", "Malware", "Phishing",
-    "Compliance", "Governance", "Arbitration", "Litigation", "Jurisdiction", "Amendment", "Statute", "Precedent",
-    "Hypothesis", "Theorem", "Axiom", "Quantum", "Entropy", "Catalyst", "Isotope", "Molecule",
-    "Chromosome", "Genome", "Enzyme", "Metabolism", "Mitochondria", "Photosynthesis", "Ecosystem", "Biodiversity",
-    "Democracy", "Bureaucracy", "Diplomacy", "Sovereignty", "Ideology", "Propaganda", "Referendum", "Coalition",
-    "Renaissance", "Enlightenment", "Revolution", "Imperialism", "Feudalism", "Colonialism", "Capitalism", "Socialism",
-    "Philosophy", "Metaphysics", "Epistemology", "Ethics", "Aesthetics", "Logic", "Dialectic", "Empiricism",
-    "Psychology", "Cognition", "Perception", "Consciousness", "Motivation", "Intelligence", "Personality", "Behavior",
-    "Sociology", "Anthropology", "Ethnography", "Culture", "Institution", "Stratification", "Urbanization", "Globalization",
-    "Economy", "Inflation", "Recession", "Deficit", "Monopoly", "Oligopoly", "Supply", "Demand",
-    "Marketing", "Branding", "Segmentation", "Demographics", "Consumer", "Revenue", "Profit", "Margin",
-    "Entrepreneurship", "Innovation", "Disruption", "Startup", "Venture", "Investment", "Acquisition", "Merger",
-    "Engineering", "Thermodynamics", "Mechanics", "Fluid", "Electromagnetic", "Semiconductor", "Circuit", "Resistance",
-    "Medicine", "Diagnosis", "Prognosis", "Symptom", "Syndrome", "Pathology", "Anatomy", "Physiology",
-    "Pharmacology", "Antibiotic", "Vaccine", "Immunity", "Inflammation", "Chronic", "Acute", "Therapy",
-    "Literature", "Narrative", "Protagonist", "Antagonist", "Metaphor", "Symbolism", "Allegory", "Irony",
-    "Linguistics", "Phonetics", "Syntax", "Semantics", "Morphology", "Pragmatics", "Discourse", "Dialect",
-    "Mathematics", "Calculus", "Algebra", "Geometry", "Trigonometry", "Statistics", "Probability", "Variable",
-    "Physics", "Relativity", "Gravity", "Momentum", "Energy", "Matter", "Particle", "Wave"
-];
-
-const DUTCH_ADVANCED_WORD_LIST = [
-    "Algoritme", "Paradigma", "Synergie", "Hefboom", "Cryptocurrency", "Blockchain", "Metadata", "Infrastructuur",
-    "Optimalisatie", "Schaalbaarheid", "Bandbreedte", "Protocol", "Architectuur", "Framework", "Middleware", "Interface",
-    "Ecosysteem", "Analytics", "Belanghebbende", "Methodologie", "Derivaat", "Portfolio", "Volatiliteit", "Aandelen",
-    "Benchmark", "Virtualisatie", "Encryptie", "Authenticatie", "Autorisatie", "Firewall", "Malware", "Phishing",
-    "Naleving", "Governance", "Arbitrage", "Rechtszaak", "Jurisdictie", "Amendement", "Statuut", "Precedent",
-    "Hypothese", "Stelling", "Axioma", "Quantum", "Entropie", "Katalysator", "Isotoop", "Molecuul",
-    "Chromosoom", "Genoom", "Enzym", "Metabolisme", "Mitochondriën", "Fotosynthese", "Ecosysteem", "Biodiversiteit",
-    "Democratie", "Bureaucratie", "Diplomatie", "Soevereiniteit", "Ideologie", "Propaganda", "Referendum", "Coalitie",
-    "Renaissance", "Verlichting", "Revolutie", "Imperialisme", "Feodalisme", "Kolonialisme", "Kapitalisme", "Socialisme",
-    "Filosofie", "Metafysica", "Epistemologie", "Ethiek", "Esthetica", "Logica", "Dialectiek", "Empirisme",
-    "Psychologie", "Cognitie", "Perceptie", "Bewustzijn", "Motivatie", "Intelligentie", "Persoonlijkheid", "Gedrag",
-    "Sociologie", "Antropologie", "Etnografie", "Cultuur", "Instituut", "Stratificatie", "Verstedelijking", "Globalisering",
-    "Economie", "Inflatie", "Recessie", "Tekort", "Monopolie", "Oligopolie", "Aanbod", "Vraag",
-    "Marketing", "Branding", "Segmentatie", "Demografie", "Consument", "Omzet", "Winst", "Marge",
-    "Ondernemerschap", "Innovatie", "Disruptie", "Startup", "Onderneming", "Investering", "Overname", "Fusie",
-    "Engineering", "Thermodynamica", "Mechanica", "Vloeistof", "Elektromagnetisch", "Halfgeleider", "Circuit", "Weerstand",
-    "Geneeskunde", "Diagnose", "Prognose", "Symptoom", "Syndroom", "Pathologie", "Anatomie", "Fysiologie",
-    "Farmacologie", "Antibioticum", "Vaccin", "Immuniteit", "Ontsteking", "Chronisch", "Acuut", "Therapie",
-    "Literatuur", "Verhaal", "Protagonist", "Antagonist", "Metafoor", "Symboliek", "Allegorie", "Ironie",
-    "Taalkunde", "Fonetiek", "Syntaxis", "Semantiek", "Morfologie", "Pragmatiek", "Discours", "Dialect",
-    "Wiskunde", "Calculus", "Algebra", "Geometrie", "Goniometrie", "Statistiek", "Waarschijnlijkheid", "Variabele",
-    "Fysica", "Relativiteit", "Zwaartekracht", "Momentum", "Energie", "Materie", "Deeltje", "Golf"
-];
-
 // Get the current word list based on user preference or game state
 function getCurrentWordList() {
-    // If we're in a game, use the deck from the game state
-    const selectedDeck = state.wordDeck || localStorage.getItem('justOneWordDeck') || 'english';
+    // Format is "language-difficulty", e.g., "english-easy" or "dutch-hard"
+    // Default fallback to english-easy
+    const selection = state.wordDeck || localStorage.getItem('justOneWordDeck') || 'english-easy';
     
-    if (selectedDeck === 'dutch') {
-        return DUTCH_WORD_LIST;
-    } else if (selectedDeck === 'dutch-advanced') {
-        return DUTCH_ADVANCED_WORD_LIST;
-    } else if (selectedDeck === 'english-advanced') {
-        return ENGLISH_ADVANCED_WORD_LIST;
-    } else {
-        return ENGLISH_WORD_LIST;
+    // Parse the selection string (e.g., "english-hard" -> lang: english, diff: hard)
+    let [lang, diff] = selection.split('-');
+    
+    // Handle legacy saved values if any exist (e.g., "english" -> "english-easy")
+    if (!diff) {
+        if (lang === 'english' || lang === 'dutch') {
+            diff = 'easy';
+        } else {
+            // If it's completely invalid, default to english-easy
+            lang = 'english';
+            diff = 'easy';
+        }
     }
+    
+    // Handle old advanced format
+    if (selection === 'english-advanced') { lang = 'english'; diff = 'hard'; }
+    if (selection === 'dutch-advanced') { lang = 'dutch'; diff = 'hard'; }
+
+    // Access the data from WORD_PACKS object in words.js
+    if (typeof WORD_PACKS !== 'undefined' && WORD_PACKS[lang] && WORD_PACKS[lang][diff]) {
+        return WORD_PACKS[lang][diff];
+    }
+    
+    // Fallback - check if WORD_PACKS is available
+    if (typeof WORD_PACKS !== 'undefined' && WORD_PACKS.english && WORD_PACKS.english.easy) {
+        return WORD_PACKS.english.easy;
+    }
+    
+    // Final fallback if words.js isn't loaded yet
+    console.error('WORD_PACKS not available, using emergency fallback');
+    return [
+        "Apple", "Music", "River", "Mountain", "Ocean", "Star", "Sun", "Moon",
+        "Book", "Key", "Tree", "Flower", "Bridge", "Road", "Car", "Train",
+        "Boat", "Plane", "Bird", "Cat", "Dog", "Fish", "Lion", "Tiger"
+    ];
 }
 
 // --- DOM ELEMENTS ---
@@ -159,6 +64,14 @@ let state = {
     score: 0,
     cardIndex: 0,
     cards: [], // Array of { id: number, words: string[], status: 'hidden' | 'revealed' | 'success' | 'fail' }
+    gameMode: 'classic', // 'classic' or 'digital'
+    digitalModeData: {
+        currentWord: '',
+        clues: [], // Array of { player: string, clue: string }
+        currentPlayerIndex: 0,
+        players: [], // Array of player names
+        duplicatesRemoved: []
+    }
 };
 
 // --- FUNCTIONS ---
@@ -221,14 +134,33 @@ function initGame(loadSaved = false) {
     state.score = 0;
     state.cardIndex = 0;
     state.cards = [];
-    state.wordDeck = localStorage.getItem('justOneWordDeck') || 'english'; // Store which deck is being used
+    state.wordDeck = localStorage.getItem('justOneWordDeck') || 'english-easy';
+    state.gameMode = localStorage.getItem('justOneGameMode') || 'classic';
+    
+    // Initialize digital mode data
+    state.digitalModeData = {
+        currentWord: '',
+        clues: [],
+        currentPlayerIndex: 0,
+        players: [],
+        duplicatesRemoved: []
+    };
     
     for (let i = 0; i < 13; i++) {
-        state.cards.push({
-            id: i,
-            words: getRandomWords(5),
-            status: 'hidden',
-        });
+        if (state.gameMode === 'classic') {
+            state.cards.push({
+                id: i,
+                words: getRandomWords(5),
+                status: 'hidden',
+            });
+        } else {
+            // Digital mode - one word per card
+            state.cards.push({
+                id: i,
+                words: [getRandomWords(1)[0]], // Single word
+                status: 'hidden',
+            });
+        }
     }
     gameOverModal.classList.add('hidden');
     
@@ -263,6 +195,12 @@ function render() {
 
     // Set up touch listeners for the current card if swipeable
     setupTouchListeners();
+    
+    // Set up digital mode input handlers if in collecting mode
+    if (state.gameMode === 'digital' && currentCard && currentCard.status === 'collecting') {
+        // Use setTimeout to ensure DOM is ready
+        setTimeout(() => setupDigitalModeInputHandlers(), 10);
+    }
 
     // Save game state (but not when game is over)
     if (state.cardIndex < 13) {
@@ -284,17 +222,28 @@ function createCardHTML(card) {
     if (!card) return '';
 
     let content = '';
+    const isDigitalMode = state.gameMode === 'digital';
+    
+    console.log('createCardHTML called with card status:', card.status, 'digital mode:', isDigitalMode);
     
     switch (card.status) {
         case 'hidden':
+            const modeText = isDigitalMode ? 'Ready to see the word?' : 'Ready to reveal the words?';
+            const buttonText = isDigitalMode ? '👁️ Show Word' : '✨ Reveal Words';
+            
             content = `
                 <div class="card card-hidden card-enter flex flex-col justify-center items-center p-6" data-id="${card.id}">
                     <div class="text-center">
-                        <div class="text-6xl mb-4">🎴</div>
+                        <div class="text-6xl mb-4">${isDigitalMode ? '💻' : '🎴'}</div>
                         <h2 class="text-3xl font-bold mb-4">Card ${card.id + 1}</h2>
-                        <p class="text-lg mb-6 opacity-90">Ready to reveal the words?</p>
+                        <p class="text-lg mb-6 opacity-90">${modeText}</p>
+                        <div class="mode-indicator mb-4">
+                            <span class="text-sm text-gray-300 opacity-70">
+                                ${isDigitalMode ? '📱 Digital Mode' : '🎴 Classic Mode'}
+                            </span>
+                        </div>
                         <button data-id="${card.id}" data-action="reveal" class="btn-primary">
-                            ✨ Reveal Words
+                            ${buttonText}
                         </button>
                     </div>
                 </div>
@@ -302,61 +251,25 @@ function createCardHTML(card) {
             break;
 
         case 'revealed':
-            const wordsHTML = card.words.map((word, i) =>
-                `<div class="word-item">
-                    <span class="font-bold text-blue-300">${i + 1}.</span> ${word}
-                </div>`
-            ).join('');
+            if (isDigitalMode) {
+                content = createDigitalModeRevealedCard(card);
+            } else {
+                content = createClassicModeRevealedCard(card);
+            }
+            break;
 
-            content = `
-                <div class="card card-revealed card-enter flex flex-col p-6" data-id="${card.id}">
-                    <div class="text-center mb-4">
-                        <h3 class="text-xl font-bold text-white mb-2">Words for Card ${card.id + 1}</h3>
-                        <p class="text-sm text-gray-300 opacity-80">Write your clues, then proceed</p>
-                    </div>
-                    <div class="flex-grow space-y-2 mb-6">
-                        ${wordsHTML}
-                    </div>
-                    <button data-id="${card.id}" data-action="proceed" class="btn-primary">
-                        🎯 Start Guessing Phase
-                    </button>
-                </div>
-            `;
+        case 'collecting':
+            if (isDigitalMode) {
+                content = createDigitalModeCollectingCard(card);
+            }
             break;
 
         case 'guessing':
-            content = `
-                <div class="card card-guessing card-enter flex flex-col justify-center items-center p-6" 
-                     data-id="${card.id}" data-swipeable="true">
-                    <div class="swipe-indicator left">❌</div>
-                    <div class="swipe-indicator right">✅</div>
-                    
-                    <div class="text-center mb-6">
-                        <div class="text-6xl mb-4">🤔</div>
-                        <h3 class="text-2xl font-bold text-white mb-2">Time to Guess!</h3>
-                        <p class="text-gray-300">Did the guesser get it right?</p>
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button data-id="${card.id}" data-action="fail" class="btn-danger">
-                            ❌ Wrong Guess
-                        </button>
-                        <button data-id="${card.id}" data-action="success" class="btn-success">
-                            ✅ Correct
-                        </button>
-                    </div>
-                    
-                    <button data-id="${card.id}" data-action="pass" 
-                            class="mt-3 btn-secondary w-full">
-                        ⏭️ Pass (Skip Card)
-                    </button>
-                    
-                    <button data-id="${card.id}" data-action="reveal" 
-                            class="mt-2 text-blue-300 hover:text-blue-200 transition-colors text-sm opacity-70">
-                        👁️ Show Words Again
-                    </button>
-                </div>
-            `;
+            if (isDigitalMode) {
+                content = createDigitalModeGuessingCard(card);
+            } else {
+                content = createClassicModeGuessingCard(card);
+            }
             break;
 
         case 'success':
@@ -366,6 +279,377 @@ function createCardHTML(card) {
             break;
     }
     return content;
+}
+
+/**
+ * Creates classic mode revealed card HTML
+ */
+function createClassicModeRevealedCard(card) {
+    const wordsHTML = card.words.map((word, i) =>
+        `<div class="word-item">
+            <span class="font-bold text-blue-300">${i + 1}.</span> ${word}
+        </div>`
+    ).join('');
+
+    return `
+        <div class="card card-revealed card-enter flex flex-col p-6" data-id="${card.id}">
+            <div class="text-center mb-4">
+                <h3 class="text-xl font-bold text-white mb-2">Words for Card ${card.id + 1}</h3>
+                <p class="text-sm text-gray-300 opacity-80">Write your clues, then proceed</p>
+            </div>
+            <div class="flex-grow space-y-2 mb-6">
+                ${wordsHTML}
+            </div>
+            <button data-id="${card.id}" data-action="proceed" class="btn-primary">
+                🎯 Start Guessing Phase
+            </button>
+        </div>
+    `;
+}
+
+/**
+ * Creates digital mode revealed card HTML
+ */
+function createDigitalModeRevealedCard(card) {
+    const word = card.words[0];
+    
+    return `
+        <div class="card card-revealed card-enter flex flex-col p-6" data-id="${card.id}">
+            <div class="text-center mb-4">
+                <h3 class="text-xl font-bold text-white mb-2">Word for Card ${card.id + 1}</h3>
+                <p class="text-sm text-gray-300 opacity-80">All players (except guesser) should see this</p>
+            </div>
+            <div class="mystery-word-display mb-6">
+                <div class="text-4xl font-bold text-center text-white p-6 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
+                    ${word}
+                </div>
+            </div>
+            <button data-id="${card.id}" data-action="setup-players" class="btn-primary">
+                👥 Set Up Players
+            </button>
+        </div>
+    `;
+}
+
+/**
+ * Creates digital mode collecting clues card HTML
+ */
+function createDigitalModeCollectingCard(card) {
+    // Ensure digital mode data is initialized
+    if (!state.digitalModeData) {
+        initializeDigitalModeData();
+    }
+    
+    // Ensure card has words
+    if (!card || !card.words || card.words.length === 0) {
+        return '<div class="card card-error">Error: No words available</div>';
+    }
+    
+    const { clues, currentPlayerIndex, players } = state.digitalModeData;
+    const currentPlayer = players[currentPlayerIndex];
+    const word = card.words[0];
+    
+    const cluesListHTML = clues.map((clue, i) =>
+        `<div class="clue-item">
+            <span class="clue-player">${clue.player}:</span>
+            <span class="clue-text">${clue.clue}</span>
+        </div>`
+    ).join('');
+
+    return `
+        <div class="card card-collecting card-enter flex flex-col p-6" data-id="${card.id}">
+            <div class="text-center mb-4">
+                <div class="mystery-word-display mb-4">
+                    <div class="text-3xl font-bold text-center text-white p-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
+                        ${word}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="clues-counter mb-4">
+                <div class="text-center" style="background: rgba(79, 172, 254, 0.1); border: 1px solid rgba(79, 172, 254, 0.3); border-radius: 8px; padding: 0.75rem;">
+                    <p class="text-sm text-gray-300">Clues collected: <strong class="text-blue-300">${clues.length}</strong></p>
+                    <p class="text-xs text-gray-400 mt-1">🤫 Hidden until guessing phase</p>
+                </div>
+            </div>
+            
+            <div class="clue-input-section mb-4">
+                <label class="text-sm text-gray-300 mb-2 block font-medium">💭 Add Your Clue (one word only):</label>
+                <div class="input-wrapper">
+                    <input type="text" id="clue-input" class="clue-input" placeholder="Enter one word clue..." maxlength="25" autocomplete="off">
+                    <div class="input-help">
+                        <span class="text-xs text-gray-400">One word only - help the guesser!</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons mb-3">
+                <button data-id="${card.id}" data-action="add-clue" class="btn-primary w-full" id="add-clue-btn">
+                    ✏️ Add My Clue & Pass Device
+                </button>
+            </div>
+            
+            ${clues.length > 0 ? `
+                <button data-id="${card.id}" data-action="start-guessing" class="btn-primary w-full">
+                    🎯 Start Guessing (${clues.length} clues)
+                </button>
+            ` : `
+                <p class="text-center text-xs text-gray-400">Collect at least one clue to start guessing</p>
+            `}
+        </div>
+    `;
+}
+
+/**
+ * Creates classic mode guessing card HTML
+ */
+function createClassicModeGuessingCard(card) {
+    return `
+        <div class="card card-guessing card-enter flex flex-col justify-center items-center p-6" 
+             data-id="${card.id}" data-swipeable="true">
+            <div class="swipe-indicator left">❌</div>
+            <div class="swipe-indicator right">✅</div>
+            
+            <div class="text-center mb-6">
+                <div class="text-6xl mb-4">🤔</div>
+                <h3 class="text-2xl font-bold text-white mb-2">Time to Guess!</h3>
+                <p class="text-gray-300">Did the guesser get it right?</p>
+            </div>
+            
+            <div class="action-buttons">
+                <button data-id="${card.id}" data-action="fail" class="btn-danger">
+                    ❌ Wrong Guess
+                </button>
+                <button data-id="${card.id}" data-action="success" class="btn-success">
+                    ✅ Correct
+                </button>
+            </div>
+            
+            <button data-id="${card.id}" data-action="pass" 
+                    class="mt-3 btn-secondary w-full">
+                ⏭️ Pass (Skip Card)
+            </button>
+            
+            <button data-id="${card.id}" data-action="reveal" 
+                    class="mt-2 text-blue-300 hover:text-blue-200 transition-colors text-sm opacity-70">
+                👁️ Show Words Again
+            </button>
+        </div>
+    `;
+}
+
+/**
+ * Creates digital mode guessing card HTML
+ */
+function createDigitalModeGuessingCard(card) {
+    // Ensure digital mode data is initialized
+    if (!state.digitalModeData) {
+        initializeDigitalModeData();
+    }
+    
+    // Ensure card has words
+    if (!card || !card.words || card.words.length === 0) {
+        return '<div class="card card-error">Error: No words available</div>';
+    }
+    
+    const { clues, duplicatesRemoved } = state.digitalModeData;
+    const word = card.words[0];
+    
+    // Remove duplicates and get unique clues
+    const uniqueClues = removeDuplicateClues(clues);
+    const finalClues = uniqueClues.filter(clue => clue.clue.trim() !== '');
+    
+    const cluesHTML = finalClues.map((clue, i) =>
+        `<div class="final-clue-item">
+            ${clue.clue}
+        </div>`
+    ).join('');
+
+    const duplicatesHTML = duplicatesRemoved.length > 0 ? `
+        <div class="duplicates-section mb-4">
+            <h4 class="text-sm text-red-300 mb-2">Removed duplicates:</h4>
+            <div class="duplicates-list">
+                ${duplicatesRemoved.map(dup => `<span class="duplicate-clue">${dup}</span>`).join('')}
+            </div>
+        </div>
+    ` : '';
+
+    return `
+        <div class="card card-guessing card-enter flex flex-col justify-center items-center p-6" 
+             data-id="${card.id}" data-swipeable="true">
+            <div class="swipe-indicator left">❌</div>
+            <div class="swipe-indicator right">✅</div>
+            
+            <div class="text-center mb-4">
+                <div class="text-4xl mb-2">🤔</div>
+                <h3 class="text-xl font-bold text-white mb-2">Time to Guess!</h3>
+                <p class="text-gray-300 text-sm">Use the clues to guess the mystery word</p>
+            </div>
+            
+            <div class="final-clues-section mb-6">
+                <div class="clues-reveal-header mb-3">
+                    <h4 class="text-lg font-bold text-white text-center mb-1">🔓 Clues Revealed!</h4>
+                    <p class="text-xs text-gray-300 text-center">After removing duplicates:</p>
+                </div>
+                <div class="final-clues-grid">
+                    ${cluesHTML}
+                </div>
+            </div>
+            
+            ${duplicatesHTML}
+            
+            <div class="action-buttons">
+                <button data-id="${card.id}" data-action="fail" class="btn-danger">
+                    ❌ Wrong Guess
+                </button>
+                <button data-id="${card.id}" data-action="success" class="btn-success">
+                    ✅ Correct
+                </button>
+            </div>
+            
+            <button data-id="${card.id}" data-action="pass" 
+                    class="mt-3 btn-secondary w-full">
+                ⏭️ Pass (Skip Card)
+            </button>
+        </div>
+    `;
+}
+
+/**
+ * Removes duplicate clues and tracks them
+ */
+function removeDuplicateClues(clues) {
+    const clueCount = new Map();
+    const duplicates = new Set();
+    
+    // Count occurrences of each clue
+    clues.forEach(clueObj => {
+        const clueText = clueObj.clue.toLowerCase().trim();
+        const count = clueCount.get(clueText) || 0;
+        clueCount.set(clueText, count + 1);
+        
+        // If this clue appears more than once, mark it as duplicate
+        if (count >= 1) {
+            duplicates.add(clueObj.clue);
+        }
+    });
+    
+    // Remove ALL instances of duplicate clues
+    const unique = clues.filter(clueObj => {
+        const clueText = clueObj.clue.toLowerCase().trim();
+        return clueCount.get(clueText) === 1;
+    });
+    
+    state.digitalModeData.duplicatesRemoved = Array.from(duplicates);
+    return unique;
+}
+
+/**
+ * Initialize digital mode data structure
+ */
+function initializeDigitalModeData() {
+    if (!state.digitalModeData) {
+        state.digitalModeData = {
+            players: ['Player 1', 'Player 2', 'Player 3', 'Player 4'], // Default players
+            currentPlayerIndex: 0,
+            clues: [],
+            duplicatesRemoved: []
+        };
+    }
+}
+
+/**
+ * Reset digital mode data for new card (clears clues but keeps players)
+ */
+function resetDigitalModeData() {
+    if (!state.digitalModeData) {
+        initializeDigitalModeData();
+    } else {
+        // Keep players but reset clues for new card
+        state.digitalModeData.currentPlayerIndex = 0;
+        state.digitalModeData.clues = [];
+        state.digitalModeData.duplicatesRemoved = [];
+    }
+}
+
+/**
+ * Add clue from input field
+ */
+function addClueFromInput(card) {
+    const input = document.getElementById('clue-input');
+    if (!input) return;
+    
+    const clue = input.value.trim();
+    if (clue === '') {
+        showFeedback('fail', 'Please enter a clue!');
+        return;
+    }
+    
+    // Validate clue (should be one word, no spaces)
+    if (clue.includes(' ')) {
+        showFeedback('fail', 'Clues should be one word only!');
+        return;
+    }
+    
+    const { players, currentPlayerIndex } = state.digitalModeData;
+    const currentPlayer = players[currentPlayerIndex];
+    
+    // Add the clue
+    state.digitalModeData.clues.push({
+        player: currentPlayer,
+        clue: clue
+    });
+    
+    // Clear input
+    input.value = '';
+    
+    // Move to next player
+    nextPlayer();
+    
+    // Show success feedback
+    showFeedback('success', `Clue "${clue}" added!`);
+    
+    // Re-render the card
+            setTimeout(() => render(), 800);
+}
+
+/**
+ * Setup digital mode input handlers after rendering
+ */
+function setupDigitalModeInputHandlers() {
+    const input = document.getElementById('clue-input');
+    const addBtn = document.getElementById('add-clue-btn');
+    
+    if (!input || !addBtn) return;
+    
+    // Handle Enter key press
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addBtn.click();
+        }
+    });
+    
+    // Auto-focus the input
+    input.focus();
+    
+    // Update button state based on input
+    const updateButtonState = () => {
+        const hasValue = input.value.trim().length > 0;
+        addBtn.disabled = !hasValue;
+        addBtn.style.opacity = hasValue ? '1' : '0.6';
+    };
+    
+    input.addEventListener('input', updateButtonState);
+    updateButtonState(); // Initial check
+}/**
+ * Move to next player in digital mode
+ */
+function nextPlayer() {
+    if (!state.digitalModeData) return;
+    
+    state.digitalModeData.currentPlayerIndex = 
+        (state.digitalModeData.currentPlayerIndex + 1) % state.digitalModeData.players.length;
 }
 
 /**
@@ -392,11 +676,16 @@ function showGameOverModal() {
 function showResumeMessage() {
     const message = document.createElement('div');
     message.className = 'resume-message';
+    
+    // Get deck info for display
+    const deckName = getDeckDisplayName(state.wordDeck || 'english-easy');
+    
     message.innerHTML = `
         <div class="resume-content">
             <div class="text-2xl mb-2">↩️</div>
             <div class="text-sm font-semibold">Game Resumed</div>
             <div class="text-xs opacity-80">Card ${state.cardIndex + 1} of 13 • Score: ${state.score}</div>
+            <div class="text-xs opacity-60">${deckName}</div>
         </div>
     `;
     
@@ -410,6 +699,17 @@ function showResumeMessage() {
         message.classList.remove('show');
         setTimeout(() => message.remove(), 300);
     }, 3000);
+}
+
+/**
+ * Get display name for deck selection
+ */
+function getDeckDisplayName(deckCode) {
+    const [lang, diff] = deckCode.split('-');
+    const langMap = { english: '🇺🇸 English', dutch: '🇳🇱 Dutch' };
+    const diffMap = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+    
+    return `${langMap[lang] || lang} - ${diffMap[diff] || diff}`;
 }
 
 /**
@@ -462,6 +762,31 @@ function handleCardAction(action, id) {
             state.cardIndex++;
             showFeedback('pass', 'Passed - Lost 1 card');
             setTimeout(() => render(), 1000);
+            break;
+        case 'setup-players':
+            // Digital mode: start collecting clues
+            if (state.gameMode === 'digital') {
+                console.log('Setting up digital mode - card:', card);
+                // Reset digital mode data for new card
+                resetDigitalModeData();
+                card.status = 'collecting';
+                console.log('Card status set to collecting, digital data:', state.digitalModeData);
+                render();
+            }
+            break;
+        case 'add-clue':
+            // Digital mode: add a clue from current player
+            if (state.gameMode === 'digital') {
+                addClueFromInput(card);
+            }
+            break;
+
+        case 'start-guessing':
+            // Digital mode: move to guessing phase
+            if (state.gameMode === 'digital') {
+                card.status = 'guessing';
+                render();
+            }
             break;
     }
 }
@@ -650,6 +975,20 @@ function handleTouchEnd(e) {
 
 // --- EVENT LISTENERS ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Ensure WORD_PACKS is loaded before initializing
+    if (typeof WORD_PACKS === 'undefined') {
+        console.error('words.js not loaded properly!');
+        // Try to reload after a short delay
+        setTimeout(() => {
+            if (typeof WORD_PACKS !== 'undefined') {
+                initGame();
+            } else {
+                alert('Error: Word lists not loaded. Please refresh the page.');
+            }
+        }, 100);
+        return;
+    }
+
     cardContainerEl.addEventListener('click', handleCardClick);
     playAgainBtn.addEventListener('click', initGame);
 

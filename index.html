@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Just One - Home</title>
+    <script src="words.js"></script>
+    <script src="script.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,14 +38,37 @@
         <h1 class="hero-title text-5xl font-bold mb-4">Just One</h1>
         <p class="text-lg text-gray-300 mb-6">A cooperative party game where you try to guess mystery words using unique clues.</p>
         
+        <!-- Game Mode Selection -->
+        <div class="game-mode-selection mb-6">
+            <label class="text-sm text-gray-300 mb-3 block">Choose Game Mode:</label>
+            <div class="mode-cards">
+                <div class="mode-card" data-mode="classic">
+                    <div class="mode-icon">🎴</div>
+                    <div class="mode-title">Classic Mode</div>
+                    <div class="mode-description">5 words per card, player write clues on paper</div>
+                </div>
+                <div class="mode-card" data-mode="digital">
+                    <div class="mode-icon">💻</div>
+                    <div class="mode-title">Digital Mode</div>
+                    <div class="mode-description">1 word shown, players type clues digitally</div>
+                </div>
+            </div>
+        </div>
+
         <!-- Word Deck Selection -->
         <div class="deck-selection mb-6">
             <label class="text-sm text-gray-300 mb-2 block">Choose Word Deck:</label>
             <select id="word-deck-select" class="deck-selector">
-                <option value="english">🇺🇸 English Words</option>
-                <option value="dutch">🇳🇱 Dutch Words</option>
-                <option value="english-advanced">🎓 English Advanced</option>
-                <option value="dutch-advanced">🎓 Dutch Advanced</option>
+                <optgroup label="English">
+                    <option value="english-easy">Level 1: Easy</option>
+                    <option value="english-medium">Level 2: Medium</option>
+                    <option value="english-hard">Level 3: Hard</option>
+                </optgroup>
+                <optgroup label="Dutch">
+                    <option value="dutch-easy">Niveau 1: Makkelijk</option>
+                    <option value="dutch-medium">Niveau 2: Gemiddeld</option>
+                    <option value="dutch-hard">Niveau 3: Expert</option>
+                </optgroup>
             </select>
         </div>
         
@@ -72,19 +97,63 @@
             const resumeBtn = document.getElementById('resume-game-btn');
             const newGameBtn = document.getElementById('new-game-btn');
             const deckSelect = document.getElementById('word-deck-select');
+            const modeCards = document.querySelectorAll('.mode-card');
             
-            // Load saved deck preference
-            const savedDeck = localStorage.getItem('justOneWordDeck') || 'english';
+            // Load saved preferences
+            let savedDeck = localStorage.getItem('justOneWordDeck') || 'english-easy';
+            let savedMode = localStorage.getItem('justOneGameMode') || 'classic';
+            
+            // Convert legacy formats
+            if (savedDeck === 'english') savedDeck = 'english-easy';
+            if (savedDeck === 'dutch') savedDeck = 'dutch-easy';
+            if (savedDeck === 'english-advanced') savedDeck = 'english-hard';
+            if (savedDeck === 'dutch-advanced') savedDeck = 'dutch-hard';
+            
+            // Update localStorage with new format
+            localStorage.setItem('justOneWordDeck', savedDeck);
+            localStorage.setItem('justOneGameMode', savedMode);
+            
             deckSelect.value = savedDeck;
             
+            // Set selected mode
+            modeCards.forEach(card => {
+                if (card.dataset.mode === savedMode) {
+                    card.classList.add('selected');
+                }
+            });
+            
+            // Check if there's a valid saved game to resume
             if (savedGame) {
-                const gameState = JSON.parse(savedGame);
-                // Only show resume if game is in progress
-                if (gameState.cardIndex < 13) {
-                    resumeBtn.classList.remove('hidden');
-                    newGameBtn.textContent = '🆕 Start New Game';
+                try {
+                    const gameState = JSON.parse(savedGame);
+                    // Only show resume if game is in progress and has valid data
+                    if (gameState && 
+                        typeof gameState.cardIndex === 'number' && 
+                        gameState.cardIndex >= 0 && 
+                        gameState.cardIndex < 13 &&
+                        gameState.cards && 
+                        Array.isArray(gameState.cards) &&
+                        gameState.cards.length > 0) {
+                        resumeBtn.classList.remove('hidden');
+                        newGameBtn.textContent = '🆕 Start New Game';
+                    } else {
+                        // Invalid or completed game, clean up localStorage
+                        localStorage.removeItem('justOneGameState');
+                    }
+                } catch (e) {
+                    // Invalid JSON, clean up localStorage
+                    localStorage.removeItem('justOneGameState');
                 }
             }
+            
+            // Handle mode selection
+            modeCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    modeCards.forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    localStorage.setItem('justOneGameMode', card.dataset.mode);
+                });
+            });
             
             // Save deck preference when changed
             deckSelect.addEventListener('change', () => {
@@ -96,8 +165,10 @@
             });
             
             newGameBtn.addEventListener('click', () => {
-                // Save selected deck before starting new game
+                // Save selected preferences before starting new game
+                const selectedMode = document.querySelector('.mode-card.selected')?.dataset.mode || 'classic';
                 localStorage.setItem('justOneWordDeck', deckSelect.value);
+                localStorage.setItem('justOneGameMode', selectedMode);
                 window.location.href = 'game.html';
             });
         });
